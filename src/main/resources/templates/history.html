@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Transaction History</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topbar">
+    <div>
+        <h1>Transaction History</h1>
+        <p>Account: <strong th:text="${accountNumber}"></strong></p>
+    </div>
+    <a th:href="@{/}" class="btn btn-light">Back to Dashboard</a>
+</header>
+
+<main class="container">
+
+    <section class="panel">
+        <h2>Account Transactions</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date & Time</th>
+                    <th>From Account</th>
+                    <th>To Account</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.id}"></td>
+                    <td th:text="${#temporals.format(transaction.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${transaction.fromAccount}"></td>
+                    <td th:text="${transaction.toAccount}"></td>
+                    <td class="amount"
+                        th:text="${#numbers.formatDecimal(transaction.amount, 1, 2)}"></td>
+                    <td th:text="${transaction.description}"></td>
+                    <td>
+                        <span class="status"
+                              th:classappend="${transaction.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
+                              th:text="${transaction.status}">
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(transactions)}">
+                    <td colspan="7" class="empty-message">No transactions found for this account.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>
